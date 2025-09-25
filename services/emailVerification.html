@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email - ExamPrepPro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #0f172a;
+            background-color: #f8fafc;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo svg {
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+        
+        .header h1 {
+            color: white;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 8px 0 0;
+            font-size: 16px;
+            font-weight: 400;
+        }
+        
+        .content {
+            padding: 50px 40px;
+        }
+        
+        .greeting {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .message {
+            font-size: 16px;
+            color: #475569;
+            margin-bottom: 35px;
+            text-align: center;
+            line-height: 1.7;
+        }
+        
+        .verify-button {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 40px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+        
+        .verify-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+        }
+        
+        .security-note {
+            background-color: #f1f5f9;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .security-note h3 {
+            margin: 0 0 10px;
+            color: #92400e;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .security-note p {
+            margin: 0;
+            color: #78716c;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .alternative-link {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        
+        .alternative-link p {
+            margin: 0 0 10px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .alternative-link code {
+            display: block;
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 13px;
+            color: #1e293b;
+            word-break: break-all;
+        }
+        
+        .footer {
+            background-color: #f8fafc;
+            padding: 40px 30px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .footer-content {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .footer h3 {
+            color: #1e293b;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 15px;
+        }
+        
+        .footer p {
+            color: #64748b;
+            font-size: 14px;
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+        
+        .social-links {
+            margin: 25px 0 20px;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .social-links a:hover {
+            color: #3b82f6;
+        }
+        
+        .copyright {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .content {
+                padding: 40px 20px;
+            }
+            
+            .greeting {
+                font-size: 20px;
+            }
+            
+            .message {
+                font-size: 15px;
+            }
+            
+            .verify-button {
+                padding: 14px 28px;
+                font-size: 15px;
+            }
+            
+            .footer {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                </svg>
+            </div>
+            <h1>ExamPrepPro</h1>
+            <p>Empowering Education Through Smart Assessment</p>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <h2 class="greeting">Welcome to ExamPrepPro! 🎓</h2>
+            
+            <p class="message">
+                Thank you for joining our educational platform! To get started with creating engaging quizzes and assessments, 
+                please verify your email address by clicking the button below.
+            </p>
+            
+            <a href="{{VERIFICATION_LINK}}" class="verify-button">
+                Verify My Email Address
+            </a>
+            
+            <div class="security-note">
+                <h3>🔒 Security Notice</h3>
+                <p>
+                    This verification link will expire in 24 hours for your security. 
+                    If you didn't create an account with ExamPrepPro, please ignore this email.
+                </p>
+            </div>
+            
+            <div class="alternative-link">
+                <p><strong>Having trouble with the button?</strong> Copy and paste this link into your browser:</p>
+                <code>{{VERIFICATION_LINK}}</code>
+            </div>
+            
+            <p class="message">
+                Once verified, you'll be able to:
+                <br>
+                📝 Create comprehensive quizzes and tests
+                <br>
+                📊 Track student performance and analytics  
+                <br>
+                🎯 Build engaging assessments with multiple question types
+                <br>
+                🚀 Launch your first exam in minutes
+            </p>
+        </div>
+        
+        <!-- Footer Section -->
+        <div class="footer">
+            <div class="footer-content">
+                <h3>Need Help?</h3>
+                <p>
+                    Our support team is here to help you get started. 
+                    If you have any questions about using ExamPrepPro, don't hesitate to reach out.
+                </p>
+                
+                <div class="social-links">
+                    <a href="{{SUPPORT_URL}}">Support Center</a>
+                    <a href="{{DOCUMENTATION_URL}}">Documentation</a>
+                    <a href="{{CONTACT_URL}}">Contact Us</a>
+                </div>
+                
+                <p>
+                    ExamPrepPro - Making assessment creation simple and effective for educators worldwide.
+                </p>
+                
+                <div class="copyright">
+                    © 2025 ExamPrepPro. All rights reserved.
+                    <br>
+                    This email was sent to {{USER_EMAIL}}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
