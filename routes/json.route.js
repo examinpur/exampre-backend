@@ -449,11 +449,11 @@ routerJSON.post("/upload-json", multiUpload, async (req, res) => {
   }
 
   console.log("Files received:", {
-    jsonFile: jsonFile.originalname,
+    jsonFile: jsonFile?.originalname,
     zipFile: zipFile?.originalname || "none",
   });
 
-  const tempExtractPath = path.join(__dirname, "../uploads", `temp_${Date.now()}`);
+  const tempExtractPath = path?.join(__dirname, "../uploads", `temp_${Date.now()}`);
 
   try {
     // Extract zip if present
@@ -467,7 +467,7 @@ routerJSON.post("/upload-json", multiUpload, async (req, res) => {
     }
 
     // Parse JSON
-    const rawData = await fs.promises.readFile(jsonFile.path, "utf-8");
+    const rawData = await fs.promises.readFile(jsonFile?.path, "utf-8");
     const questions = JSON.parse(rawData);
 
     if (!Array.isArray(questions)) {
