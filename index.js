@@ -157,7 +157,7 @@ app.post('/subscribe', async (req, res) => {
     const sendSmtpEmail = {
       sender: { email: FROM_EMAIL, name: FROM_NAME },
       to: [{ email }],
-      subject: 'Welcome Quilt Of Courage!',
+      subject: 'Welcome Quilt of Courage!',
       htmlContent: `
         <!DOCTYPE html>
 <html lang="en">
