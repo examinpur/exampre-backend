@@ -5,6 +5,8 @@ const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 const rateLimit = require('express-rate-limit');
+const admin = require('firebase-admin');
+const Sib = require('sib-api-v3-sdk');
 const connect = require("./database/db");
 const { libraryRoutes } = require("./routes/library.route");
 const { adminRoutes } = require("./routes/admin.routes");
@@ -83,26 +85,49 @@ const {
   FIREBASE_PROJECT_ID
 } = process.env;
 
-
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: FIREBASE_PROJECT_ID,
-      clientEmail: FIREBASE_CLIENT_EMAIL,
-      privateKey: FIREBASE_PRIVATE_KEY,
-    }),
-  });
+// Initialize Firebase Admin only if all required env vars are present
+let db = null;
+if (FIREBASE_PROJECT_ID && FIREBASE_CLIENT_EMAIL && FIREBASE_PRIVATE_KEY) {
+  try {
+    if (!admin.apps.length) {
+      // Handle escaped newlines in private key (common in env vars)
+      const privateKey = FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId: FIREBASE_PROJECT_ID,
+          clientEmail: FIREBASE_CLIENT_EMAIL,
+          privateKey: privateKey,
+        }),
+      });
+    }
+    db = admin.firestore();
+    console.log('Firebase Admin initialized successfully');
+  } catch (error) {
+    console.error('Error initializing Firebase Admin:', error.message);
+    console.warn('Firebase features will be disabled');
+  }
+} else {
+  console.warn('WARN: Firebase environment variables missing. Firebase features will be disabled.');
 }
-const db = admin.firestore();
 
 if (!BREVO_API_KEY) console.warn('WARN: BREVO_API_KEY missing in .env');
 if (!FROM_EMAIL) console.warn('WARN: FROM_EMAIL missing in .env');
 
-const defaultClient = Sib.ApiClient.instance;
-const apiKeyAuth = defaultClient.authentications['api-key'];
-apiKeyAuth.apiKey = BREVO_API_KEY;
-
-const emailsApi = new Sib.TransactionalEmailsApi();
+// Initialize Brevo API only if API key is present
+let emailsApi = null;
+if (BREVO_API_KEY) {
+  try {
+    const defaultClient = Sib.ApiClient.instance;
+    const apiKeyAuth = defaultClient.authentications['api-key'];
+    apiKeyAuth.apiKey = BREVO_API_KEY;
+    emailsApi = new Sib.TransactionalEmailsApi();
+    console.log('Brevo API initialized successfully');
+  } catch (error) {
+    console.error('Error initializing Brevo API:', error.message);
+  }
+} else {
+  console.warn('WARN: Brevo API not initialized - BREVO_API_KEY missing');
+}
 
 app.post('/subscribe', async (req, res) => {
   try {
@@ -113,6 +138,9 @@ app.post('/subscribe', async (req, res) => {
     }
     if (!FROM_EMAIL) {
       return res.status(500).json({ error: 'Server not configured: FROM_EMAIL missing.' });
+    }
+    if (!db) {
+      return res.status(500).json({ error: 'Server not configured: Firebase not initialized.' });
     }
 
     const normalizedEmail = String(email).trim().toLowerCase();
@@ -238,6 +266,10 @@ app.post('/subscribe', async (req, res) => {
 
       `,
     };
+
+    if (!emailsApi) {
+      return res.status(500).json({ error: 'Server not configured: Brevo API not initialized.' });
+    }
 
     const resp = await emailsApi.sendTransacEmail(sendSmtpEmail);
 
@@ -843,7 +875,7 @@ function formatQuestion(question) {
 
 // ***************************************************
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
    try {
      console.log(`Server running on port ${PORT}`)
     connect();
