@@ -807,47 +807,6 @@ exports.importQuestionsInSectionAdvanced = async (req, res) => {
   }
 };
 
-// Reset import count for specific questions (user's own questions only)
-exports.resetQuestionImportCount = async (req, res) => {
-  const { questionIds } = req.params;
-  const userId = req.user?._id;
-  
-  if (!userId) {
-    return res.status(401).json({
-      message: 'Authentication required.'
-    });
-  }
-  try {
-    // Reset count to 0 and clear test array for specific questions created by the user
-    const result = await questionModel.findById(
-      { 
-        _id:  questionIds ,
-        createdBy: userId 
-      }
-    );
-
-    if (result) {
-      result.numberOfQuestionImport.count = 0;
-      result.numberOfQuestionImport.test = [];
-      await result.save();
-    }
-
-    res.status(200).json({
-      message: "Question import counts reset successfully.",
-      modifiedCount: result.modifiedCount,
-      totalRequested: questionIds.length
-    });
-
-  } catch (error) {
-    console.error("Error resetting question import counts:", error);
-    res.status(500).json({
-      message: "Failed to reset question import counts",
-      error: error.message
-    });
-  }
-};
-
-// Reset import count for all questions (user's own questions only)
 exports.resetAllQuestionImportCounts = async (req, res) => {
   const userId = req.user?._id;
   

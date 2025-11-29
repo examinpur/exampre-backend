@@ -31,7 +31,6 @@ exports.createChapter = async (req, res) => {
   }
 };
 
-// Get all chapters
 exports.getAllChapters = async (req, res) => {
   try {
 const chapters = await Chapter.find()
@@ -49,7 +48,6 @@ const chapters = await Chapter.find()
   }
 };
 
-// Get chapter by ID
 exports.getChapterById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -63,7 +61,6 @@ exports.getChapterById = async (req, res) => {
   }
 };
 
-// Get chapters by subject ID
 exports.getChaptersBySubjectId = async (req, res) => {
   try {
     const { subjectId } = req.params;
@@ -74,7 +71,6 @@ exports.getChaptersBySubjectId = async (req, res) => {
   }
 };
 
-// Update chapter
 exports.updateChapter = async (req, res) => {
   try {
     const { id } = req.params;
@@ -115,7 +111,6 @@ exports.updateChapter = async (req, res) => {
   }
 };
 
-// Delete chapter
 exports.deleteChapter = async (req, res) => {
   try {
     const { id } = req.params;

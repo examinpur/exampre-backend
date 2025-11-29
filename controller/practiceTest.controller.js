@@ -2,7 +2,7 @@ const { globalFileModel } = require("../model/globalLibraryFiles");
 const { GlobalSectionModel } = require("../model/globalLibrarySections");
 const { PracticeTestModel } = require("../model/PracticeTest.model");
 const { questionModel } = require("../model/Questions");
-const { generatePracticeTestDocx } = require('../utils/docxGenerator');
+// const { generatePracticeTestDocx } = require('../utils/docxGenerator');
 
 exports.createPracticeTest = async (req, res) => {
   try {
@@ -180,11 +180,11 @@ exports.getAllListOfWithSections = async (req, res) => {
 // }
 
 // Rename and simplify the controller function
-exports.downloadPracticeTestDocx = async (req, res) => {
-  try {
-    await generatePracticeTestDocx(req, res);
-  } catch (err) {
-    console.error('Error generating DOCX:', err);
-    res.status(500).send('Failed to generate DOCX');
-  }
-};
+// exports.downloadPracticeTestDocx = async (req, res) => {
+//   try {
+//     await generatePracticeTestDocx(req, res);
+//   } catch (err) {
+//     console.error('Error generating DOCX:', err);
+//     res.status(500).send('Failed to generate DOCX');
+//   }
+// };

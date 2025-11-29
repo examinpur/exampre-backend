@@ -1,10 +1,10 @@
 
 const express = require('express');
-const { createQuestions, editQuestion, deleteQuestion, getQuestionById, getAllQuestions, uploadQuestionsWithDoc, getShuffledQuestions } = require('../controller/question.controller');
+const { createQuestions, editQuestion, deleteQuestion, getQuestionById, getAllQuestions, uploadQuestionsWithDoc, getShuffledQuestions, resetQuestionImportCount } = require('../controller/question.controller');
 const { authenticate } = require('../middleware/authMiddleware');
 const questionsRoutes = express.Router();
 const multer = require("multer");
-const { resetQuestionImportCount } = require('../controller/library.controller');
+// const { resetQuestionImportCount } = require('../controller/library.controller');
 const upload = multer({ dest: 'uploads/' });
 
 questionsRoutes.post('/', createQuestions);

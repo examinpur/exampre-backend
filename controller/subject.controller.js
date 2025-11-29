@@ -1,21 +1,15 @@
 const Subject = require("../model/subject");
 
-// Create new subject
 exports.createSubject = async (req, res) => {
   try {
     const { subject , classId } = req.body;
-
     if (!subject) {
       return res.status(400).json({ message: "Subject name is required." });
     }
-
-    // Check for duplicate (case-insensitive)
- const existing = await Subject.findOne({
-  subject: { $regex: new RegExp(`^${subject}$`, "i") },
-  classId: classId // or whatever the variable name for class is
-});
-
-
+     const existing = await Subject.findOne({
+       subject: { $regex: new RegExp(`^${subject}$`, "i") },
+       classId: classId 
+    });
     if (existing) {
       return res.status(409).json({ message: "Subject with the same name already exists." });
     }
@@ -26,8 +20,6 @@ exports.createSubject = async (req, res) => {
     return res.status(500).json({ message: "Internal server error.", error: error.message });
   }
 };
-
-// Get all subjects
 exports.getAllSubjects = async (req, res) => {
   try {
     const subjects = await Subject.find().populate("classId","class").sort({ createdAt: -1 });
@@ -60,20 +52,19 @@ exports.getSubjectById = async (req, res) => {
   }
 };
 
-// Update subject
 exports.updateSubject = async (req, res) => {
   try {
     const { id } = req.params;
-    const { subject } = req.body;
+    const { subject , classId } = req.body;
 
     if (!subject) {
       return res.status(400).json({ message: "Subject name is required." });
     }
 
-    // Check for duplicate name excluding current ID
     const existing = await Subject.findOne({
       _id: { $ne: id },
       subject: { $regex: new RegExp(`^${subject}$`, "i") },
+      classId: classId
     });
 
     if (existing) {
@@ -95,8 +86,6 @@ exports.updateSubject = async (req, res) => {
     return res.status(500).json({ message: "Error updating subject.", error: error.message });
   }
 };
-
-// Delete subject
 exports.deleteSubject = async (req, res) => {
   try {
     const { id } = req.params;

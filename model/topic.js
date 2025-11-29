@@ -12,11 +12,11 @@ const topicSchema = new mongoose.Schema(
       ref: "Chapter",
       required: true,
     },
-      subjectId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Subject",
-          required: true,
-        },
+    subjectId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subject",
+      required: true,
+    },
   },
   {
     timestamps: true,

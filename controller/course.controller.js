@@ -7,8 +7,6 @@ exports.createCourse = async (req, res) => {
     if (!course) {
       return res.status(400).json({ message: "course is required." });
     }
-
-    // Check for duplicate (case-insensitive)
     const existing = await CourseModel.findOne({
       course: { $regex: new RegExp(`^${course}$`, "i") },
     });
@@ -24,8 +22,6 @@ exports.createCourse = async (req, res) => {
     return res.status(500).json({ message: "Internal server error.", error: error.message });
   }
 };
-
-// Get all courses
 exports.getAllCourses = async (req, res) => {
   try {
     const courses = await CourseModel.find({ isDelete : false });
@@ -34,8 +30,6 @@ exports.getAllCourses = async (req, res) => {
     return res.status(500).json({ message: "Failed to fetch courses.", error: error.message });
   }
 };
-
-// Get course by ID
 exports.getCourseById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -51,7 +45,6 @@ exports.getCourseById = async (req, res) => {
   }
 };
 
-// Update course
 exports.updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
@@ -60,8 +53,6 @@ exports.updateCourse = async (req, res) => {
     if (!course) {
       return res.status(400).json({ message: "course is required." });
     }
-
-    // Check for duplicate name excluding current ID
     const existing = await CourseModel.findOne({
       _id: { $ne: id },
       course: { $regex: new RegExp(`^${course}$`, "i") },
@@ -86,8 +77,6 @@ exports.updateCourse = async (req, res) => {
     return res.status(500).json({ message: "Error updating course.", error: error.message });
   }
 };
-
-// Delete course
 exports.deleteCourse = async (req, res) => {
   try {
     const { id } = req.params;

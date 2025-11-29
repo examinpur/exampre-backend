@@ -9,7 +9,7 @@ const chapterSchema = new mongoose.Schema(
     },
     subjectId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Subject", // reference to Subject model
+      ref: "Subject",
       required: true,
     },
   },

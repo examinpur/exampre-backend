@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { createPracticeTest, getAllListOfTest, getAllListOfWithSections, getAllPracticeTest, getPracticeTestById, updatePracticeTest, deletePracticeTest, downloadPracticeTestDocx } = require('../controller/practiceTest.controller');
+const { createPracticeTest, getAllListOfTest, getAllListOfWithSections, getAllPracticeTest, getPracticeTestById, updatePracticeTest, deletePracticeTest,  } = require('../controller/practiceTest.controller');
 const practiceTestRoutes = express.Router();
 
 practiceTestRoutes.post('/', createPracticeTest);
@@ -10,7 +10,7 @@ practiceTestRoutes.get('/', getAllPracticeTest);
 practiceTestRoutes.get('/:id', getPracticeTestById);
 practiceTestRoutes.put('/:id', updatePracticeTest);
 practiceTestRoutes.delete('/:id', deletePracticeTest);
-practiceTestRoutes.post('/downloaddocx', downloadPracticeTestDocx);
+// practiceTestRoutes.post('/downloaddocx', downloadPracticeTestDocx);
 
 
 module.exports = practiceTestRoutes;

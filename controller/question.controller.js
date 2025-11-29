@@ -629,211 +629,6 @@ function parseQuestionsFromDocument(text) {
     return question;
   }).filter(q => q.questionText.trim().length > 0);
 }
-
-function parseQuestionSection(sectionText) {
- const lines = sectionText.split('\n').map(line => line.trim()).filter(line => line);
- 
- if (lines.length === 0) return null;
- console.log(lines)
- const question = {
-   questionText: '',
-   type: 'mcq',
-   options: [],
-   blanks: [],
-   correctAnswer: null,
-   solution: '',
-   marks: 1,
-   negativeMarking: false,
-   negativeMarksValue: 0,
-   difficultyLevel: 'easy',
-   subject: '',
-   chapterName: '',
-   topic: '',
-   resource: '',
-   previousYearsQuestion: false,
-   year: '',
-   titles: [],
-   passage: ''
- };
- 
- let currentField = '';
- 
- for (const line of lines) {
-   if (line.toLowerCase().startsWith('question')) {
-     currentField = 'question';
-     console.log(line)
-     const questionMatch = line.match(/question\s+(.+)/i);
-     if (questionMatch) {
-       question.questionText = questionMatch[1].trim();
-     }
-     continue;
-   }
-   
-   if (line.toLowerCase().startsWith('type')) {
-     currentField = 'type';
-     const typeMatch = line.match(/type\s+(.+)/i);
-     if (typeMatch) {
-       const type = typeMatch[1].trim().toLowerCase();
-       if (['mcq', 'truefalse', 'fillintheblank', 'integertype'].includes(type)) {
-         question.type = type;
-       }
-     }
-     continue;
-   }
-   
-   if (line.toLowerCase().startsWith('option')) {
-     currentField = 'option';
-     const optionMatch = line.match(/option\s+(.+?)\s+(correct|incorrect)/i);
-     if (optionMatch) {
-       question.options.push({
-         text: optionMatch[1].trim(),
-         isCorrect: optionMatch[2].toLowerCase() === 'correct'
-       });
-     }
-     continue;
-   }
-   
-   if (line.toLowerCase().startsWith('blanks')) {
-     currentField = 'blanks';
-     const blankMatch = line.match(/blanks\s+correctanswer\s+(.+)/i);
-     if (blankMatch) {
-       const answer = blankMatch[1].trim();
-       if (answer !== '-') {
-         question.blanks.push({
-           correctAnswer: answer
-         });
-       }
-     }
-     continue;
-   }
-   
-   if (line.toLowerCase().startsWith('correctanswer')) {
-     const answerMatch = line.match(/correctanswer\s+(.+)/i);
-     if (answerMatch) {
-       let answer = answerMatch[1].trim();
-       if (answer !== '-') {
-         if (question.type === 'integertype' || question.type === 'integerType') {
-           const numMatch = answer.match(/(\d+)/);
-           if (numMatch) {
-             question.correctAnswer = parseInt(numMatch[1]);
-           } else {
-             question.correctAnswer = 0;
-           }
-         } else {
-           question.correctAnswer = answer;
-         }
-       } else {
-         question.correctAnswer = question.type === 'integertype' ? 0 : null;
-       }
-     }
-     continue;
-   }
-   
-   if (line.toLowerCase().startsWith('solution')) {
-     currentField = 'solution';
-     const solutionMatch = line.match(/solution\s+(.+)/i);
-     if (solutionMatch) {
-       const solution = solutionMatch[1].trim();
-       question.solution = solution === '-' ? '' : solution;
-     }
-     continue;
-   }
-   
-   if (line.toLowerCase().startsWith('marks')) {
-     const marksMatch = line.match(/marks\s+(\d+)/i);
-     if (marksMatch) {
-       question.marks = parseInt(marksMatch[1]);
-     } else {
-       question.marks = 1;
-     }
-     continue;
-   }
-   
-   if (line.toLowerCase().startsWith('negativemarksvalue')) {
-     const negMarksMatch = line.match(/negativemarksvalue\s+(\d+\.?\d*)/i);
-     if (negMarksMatch) {
-       question.negativeMarksValue = parseFloat(negMarksMatch[1]);
-       question.negativeMarking = question.negativeMarksValue > 0;
-     } else {
-       question.negativeMarksValue = 0;
-       question.negativeMarking = false;
-     }
-     continue;
-   }
-   
-   // Handle other fields with dash replacement
-   const fieldMappings = [
-     { pattern: /^difficultylevel/i, field: 'difficultyLevel', default: 'easy', values: ['easy', 'medium', 'hard'] },
-     { pattern: /^subject/i, field: 'subject', default: '' },
-     { pattern: /^chaptername/i, field: 'chapterName', default: '' },
-     { pattern: /^topic/i, field: 'topic', default: '' },
-     { pattern: /^resources?/i, field: 'resource', default: '' },
-     { pattern: /^year/i, field: 'year', default: '' },
-     { pattern: /^passage/i, field: 'passage', default: '' }
-   ];
-   
-   for (const mapping of fieldMappings) {
-     if (mapping.pattern.test(line)) {
-       const match = line.match(new RegExp(`${mapping.pattern.source}\\s+(.+)`, 'i'));
-       if (match) {
-         const value = match[1].trim();
-         if (value === '-') {
-           question[mapping.field] = mapping.default;
-         } else if (mapping.values && !mapping.values.includes(value.toLowerCase())) {
-           question[mapping.field] = mapping.default;
-         } else {
-           question[mapping.field] = value;
-         }
-       }
-       break;
-     }
-   }
-   
-   if (line.toLowerCase().startsWith('previousyear')) {
-     const prevYearMatch = line.match(/previousyear\s+(.+)/i);
-     if (prevYearMatch) {
-       const value = prevYearMatch[1].trim();
-       question.previousYearsQuestion = value !== '-' && value.toLowerCase() === 'true';
-     }
-     continue;
-   }
-   
-   if (line.toLowerCase().startsWith('titles')) {
-     const titlesMatch = line.match(/titles\s+(.+)/i);
-     if (titlesMatch) {
-       const value = titlesMatch[1].trim();
-       question.titles = value === '-' ? [] : value.split(',').map(title => title.trim());
-     }
-     continue;
-   }
- }
- 
- if (!question.questionText.trim()) return null;
- 
- if (question.type === 'mcq' && question.options.length > 0) {
-   const correctOptions = question.options.filter(opt => opt.isCorrect);
-   question.answerType = correctOptions.length > 1 ? 'multiple' : 'single';
- }
- 
- if (question.type === 'truefalse') {
-   if (question.options.length === 0) {
-     question.options = [
-       { text: 'True', isCorrect: false },
-       { text: 'False', isCorrect: false }
-     ];
-   }
-   if (question.correctAnswer !== null) {
-     const isTrue = question.correctAnswer.toString().toLowerCase() === 'true';
-     question.options[0].isCorrect = isTrue;
-     question.options[1].isCorrect = !isTrue;
-     question.correctAnswer = isTrue;
-   }
-   question.answerType = 'single';
- }
- 
- return question;
-}
-
 exports.getShuffledQuestions = async (req, res) => {
   try {
     const { sectionId, numberOfQuestions, subject, difficultyLevel, type } = req.body;
@@ -879,5 +674,43 @@ exports.getShuffledQuestions = async (req, res) => {
   } catch (error) {
     console.error("Error in getShuffledQuestions:", error);
     res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+exports.resetQuestionImportCount = async (req, res) => {
+  const { questionIds } = req.params;
+  const userId = req.user?._id;
+  
+  if (!userId) {
+    return res.status(401).json({
+      message: 'Authentication required.'
+    });
+  }
+  try {
+    const result = await questionModel.findById(
+      { 
+        _id:  questionIds ,
+        createdBy: userId 
+      }
+    );
+
+    if (result) {
+      result.numberOfQuestionImport.count = 0;
+      result.numberOfQuestionImport.test = [];
+      await result.save();
+    }
+
+    res.status(200).json({
+      message: "Question import counts reset successfully.",
+      modifiedCount: result.modifiedCount,
+      totalRequested: questionIds.length
+    });
+
+  } catch (error) {
+    console.error("Error resetting question import counts:", error);
+    res.status(500).json({
+      message: "Failed to reset question import counts",
+      error: error.message
+    });
   }
 };
